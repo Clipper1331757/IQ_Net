@@ -88,8 +88,8 @@ def infer_tree(msa_file, output_path, top_classifier, bls_predictor,fasta = True
 
 def parse_args():
     parser = argparse.ArgumentParser()
-    parser.add_argument('--classifier_name', type=str, default='quartet_net_bls_test_log_cosh_epoch_2',help = 'name of the classifier network', required=False)
-    parser.add_argument('--regressor_name', type=str, default='quartet_net_bls_test_log_cosh_epoch_2',help = 'name of the regressor network', required=False)
+    parser.add_argument('--classifier_name', type=str, default='iq_net_top',help = 'name of the classifier network', required=False)
+    parser.add_argument('--regressor_name', type=str, default='iq_net_bls',help = 'name of the regressor network', required=False)
 
     parser.add_argument('--batch_process', type=int, default=1,help='0 for infer single tree, 1 for infer multiple trees', required=False)
     parser.add_argument('--alignments_dir', type=str,default='./test_align',help='path to the alignments file or folder', required=False)
@@ -133,30 +133,5 @@ if __name__ == '__main__':
     end = datetime.now()
     time_difference = end - start
     with open(args.log_file, "a") as log_file:
-        log_file.write(f"Run time: {time_difference:.4f} seconds\n")
-
-
-
-
-
-
-
-
-
-
-
-# i = 0
-# for alignments in tree_list:
-#     msa_file = './test_align/' + alignments + '.fasta'
-#     output_path = './test_trees/' + alignments + '.nwk'
-#     nwk = infer_tree(msa_file,output_path,top_classifier,bls_predictor,device = device)
-#     i +=1
-#     if i >=1000:
-#         break
-# end = datetime.now()
-# print(start)
-# print(end)
-# time_difference = end - start
-#
-# print("total second:", time_difference.total_seconds())
+        log_file.write(f"Run time: {time_difference} \n")
 

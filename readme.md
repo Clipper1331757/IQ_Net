@@ -14,10 +14,11 @@
 - `infer_tree.py` - infer four taxa phylogenetic tree in .nwk format from .fasta file
 #### 3. First steps
 - Download the [Data set](https://drive.google.com/file/d/1NmV3VpgdcaW8SQu3QHMDZR6WzJ4nSHqT/view?usp=sharing)
-- Download the [Pre-trained Model](https://drive.google.com/file/d/1Hi4KkYQ4i_FHjkS-Sczj0REQeIgFwU08/view?usp=sharing)
+- Download the [Pre-trained Model](https://drive.google.com/file/d/11yfYPV7zuQKUclLUBxSytUFyQ2VJgqqv/view?usp=sharing)
+- Download the [Test alignments](https://drive.google.com/file/d/16W6JBfJzFxfoJjaRXLBHMiraPV-Dx4Pq/view?usp=sharing)
 - Put the training data, validation data and testing data in `data/`.
 - Put the pre-trained model in `model/`
-
+- Extract the test_align.zip
 
 #### 3. Train the model
 - Run `main.py` to train the model, the trained model will be saved in `model` folder.

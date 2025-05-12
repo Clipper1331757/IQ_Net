@@ -32,7 +32,6 @@ def train_bls(args, model, optimizer):
     start_time = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
     scheduler = optim.lr_scheduler.StepLR(optimizer, step_size=1, gamma=args.lr_decay)
     df = pd.read_csv(args.train_dir)
-    print(df.shape)
     df = df.iloc[:,target_list]
     # training
     trainloader = DataLoader(PatternFrequencyDataset_bls(df), batch_size=args.batch_size, shuffle=True, num_workers=4)
