@@ -55,9 +55,9 @@ def evaluate(model,df,batch_size):
 
 def parse_args():
     parser = argparse.ArgumentParser()
-    parser.add_argument('--net_name', type=str, default='iq_net_top',help = 'name of the classifier network', required=False)
+    parser.add_argument('--net_name', type=str, default='iq_net_bls',help = 'name of the classifier network', required=False)
     parser.add_argument('--test_dir', type=str, default='./data/data_test_v3.csv', required=False)
-    parser.add_argument('--output_dir', type=str, default='./iq_net_top_df.csv', required=False)
+    parser.add_argument('--output_dir', type=str, default='./iq_net_bls_df.csv', required=False)
 
     args = parser.parse_args()
     return args
