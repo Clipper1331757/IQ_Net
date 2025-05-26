@@ -40,10 +40,14 @@
 #### 4. Test the model
 - Run `eval_top.py` to test the topology prediction model
 - Run `eval_bls.py` to test the branch length regressor model.
-  - net_name: name of the resumed network
+  - net_dir: path to the saved model
   - test_dir: path of the test data
   - output_dir: path of the output file
+- test_dif should be point to a .csv file
 - This model will output one CSV file contains predicted branch length or topology.
+```bash
+python3 eval_top.py --net_name ./model/iq_net_top.pth --test_dir ./data/df_test.csv --output_dir ./df_iq_net_top.csv
+```
 
 #### 5. Tree inference
 - Run `infer_tree.py` to infer the four-taxa phylogenetic tree.
@@ -53,3 +57,16 @@
   - alignments_dir: if batch_process = 0, it should be the path of the alignments file, e.g. test_alignment.fasta; if batch_process = 1, it should be path of a folder that store all alignments files that need to be inferred. 
   - output_dir: if batch_process = 0, it should be the path of the tree file, e.g. test_tree.nwk; if batch_process = 1, it should be path of a folder that store all inferred tree files.
   - log_file: name of the log file that store the run time
+- Input: .fasta file; Output: .nwk file
+
+#### 6. Other utilities
+- Run `train_test_split` to split a data set into two sub-sets.
+  - if you want to split dataset to training, validation, and testing data, you could run this script twice
+- Run `extract_tree_df.py` to extract tree topology and branch length from tree files and alignments files.
+- Run `extract_pattern_frequency_tree_df.py` to extract pattern frequency, tree topology, and branch length from tree files and alignments files.
+  - First run `get_tree_index.py` to get all tree file names.
+  - Then run `extract_pattern_frequency_tree_df.py` to extract data into multiple .csv files.
+  - Run `concat_df.py` to merge multiple .csv files to get the whole dataset.
+  - When extract a large number of trees, there may not be enough memory to store the whole df, using these scripts to process the data batch by batch.
+- `data_analysis.ipynb` contains codes used for data visualisation and analysis.
+  - Should have the processed .csv file.

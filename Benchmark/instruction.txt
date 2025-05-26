@@ -1,0 +1,22 @@
+1. For DeepNNPhylogeny
+python files needed for testing: "ModelPredictorLoaded.py" and "TopologyPredictorLoaded.py"
+  (1)Test alignments are stored under a zip file named "test_align_no_gap.zip".
+  (2)Extract the test alignments under the "DeepNNPhylogeny" folder.
+  (3)I made a few changes to the original code and scripts, I named them as "ModelPred_TopPred_v2.sh", "ModelPredictorLoaded_v2.py", and "TopologyPredictorLoaded_v2.py", to change the output path.
+  (4)Run ModelPred_TopPred_v2.sh, all output trees will be stored under a folder named "dl_output".
+
+2. For FuSang
+python files needed for testing: "fusang.py"
+  (1)Test alignments are stored under a zip file named "test_align.zip".
+  (2)Extract the test alignments under the "Fusang" folder.
+  (3)Run "fusang_script.sh", all output trees will be stored under a folder named "dl_output".
+
+3. For Suvorov's model (Tree_learning)
+python files needed for testing: "keras_CNN_apply.py"
+  (1)Test alignments are stored under a zip file named "test_align.zip".
+  (2)Extract the test alignments under the "./Tree_learning/KERAS" folder.
+  (3)I made a few changes to the original code and scripts, I named them as "keras_CNN_apply_v2.py.sh", to change the output path.
+  (4)Run "test_script.sh", all output trees will be stored under a folder named "dl_output".
+
+
+Note that all three models are based on different versions of TensorFlow, please try to create different virtual environments and solve the package conflicts.

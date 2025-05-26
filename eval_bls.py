@@ -55,7 +55,7 @@ def evaluate(model,df,batch_size):
 
 def parse_args():
     parser = argparse.ArgumentParser()
-    parser.add_argument('--net_name', type=str, default='iq_net_top',help = 'name of the classifier network', required=False)
+    parser.add_argument('--net_dir', type=str, default='./model/iq_net_bls.pth', help='path to the saved model',required=False)
     parser.add_argument('--test_dir', type=str, default='./data/data_test_v3.csv', required=False)
     parser.add_argument('--output_dir', type=str, default='./iq_net_top_df.csv', required=False)
 
@@ -65,7 +65,7 @@ def parse_args():
 
 if __name__ == '__main__':
     args = parse_args()
-    resume_dir = './model/' +args.net_name + '.pth'
+    resume_dir = args.net_dir
     df = pd.read_csv(args.test_dir)
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     model = Quartet_Net_bls().to(device)

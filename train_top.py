@@ -30,7 +30,7 @@ def train_top(args, model, optimizer):
     df = pd.read_csv(args.train_dir)
     df = df.iloc[:,target_list]
     # training
-    print(start_time)
+
     trainloader = DataLoader(PatternFrequencyDataset_top(df), batch_size=args.batch_size, shuffle=True, num_workers=4)
     for epoch in range(args.epochs):
         torch.cuda.empty_cache()

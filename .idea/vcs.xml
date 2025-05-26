@@ -2,5 +2,9 @@
 <project version="4">
   <component name="VcsDirectoryMappings">
     <mapping directory="$PROJECT_DIR$" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/Benchmark/DeepNNPhylogeny" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/Benchmark/Fusang" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/Benchmark/Tree_learning" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/Benchmark/tree_branch" vcs="Git" />
   </component>
 </project>

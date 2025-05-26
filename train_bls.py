@@ -36,7 +36,7 @@ def train_bls(args, model, optimizer):
     # training
     trainloader = DataLoader(PatternFrequencyDataset_bls(df), batch_size=args.batch_size, shuffle=True, num_workers=4)
     temp_error = evaluate(args, model)
-    print(temp_error)
+
     for epoch in range(args.epochs):
 
 
@@ -66,6 +66,7 @@ def train_bls(args, model, optimizer):
         # compute the accuracy on validation set
         temp_error = evaluate(args,model)
         print(temp_error)
+
         for k in temp_error.keys():
             error[k].append(temp_error[k])
     end_time = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
