@@ -63,10 +63,23 @@ python3 eval_top.py --net_name ./model/iq_net_top.pth --test_dir ./data/df_test.
 - Run `train_test_split` to split a data set into two sub-sets.
   - if you want to split dataset to training, validation, and testing data, you could run this script twice
 - Run `extract_tree_df.py` to extract tree topology and branch length from tree files and alignments files.
+  - columns = ['ext_b1', 'ext_b2', 'ext_b3', 'ext_b4', 'int_b', 'top', 'taxon1', 'taxon2', 'taxon3', 'taxon4','tree_id']
+    - ext_b(i): the external branch length of the (i)th species
+    - int_b: the internal branch length
+    - top: tree topology
+    - taxon(i): the name of the (i)th species
+    - tree_id: the name of the tree file
 - Run `extract_pattern_frequency_tree_df.py` to extract pattern frequency, tree topology, and branch length from tree files and alignments files.
   - First run `get_tree_index.py` to get all tree file names.
   - Then run `extract_pattern_frequency_tree_df.py` to extract data into multiple .csv files.
   - Run `concat_df.py` to merge multiple .csv files to get the whole dataset.
   - When extract a large number of trees, there may not be enough memory to store the whole df, using these scripts to process the data batch by batch.
+  - columns = ['AAAA' , ... , '----' , 'ext_b1', 'ext_b2', 'ext_b3', 'ext_b4', 'int_b', 'top', 'taxon1', 'taxon2', 'taxon3', 'taxon4','tree_id']
+    - `AAAA` to `----`: the first 625 columns contains the pattern frequency
+    - ext_b(i): the external branch length of the (i)th species
+    - int_b: the internal branch length
+    - top: tree topology
+    - taxon(i): the name of the (i)th species
+    - tree_id: the name of the tree file
 - `data_analysis.ipynb` contains codes used for data visualisation and analysis.
   - Should have the processed .csv file.
