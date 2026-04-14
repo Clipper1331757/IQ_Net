@@ -30,12 +30,12 @@ It jointly predicts tree topology and branch lengths directly from multiple sequ
 - Download the [Pre-trained Model](https://drive.google.com/file/d/11yfYPV7zuQKUclLUBxSytUFyQ2VJgqqv/view?usp=sharing)
 - Download the [Test alignments](https://drive.google.com/file/d/16W6JBfJzFxfoJjaRXLBHMiraPV-Dx4Pq/view?usp=sharing)
 #### 2. Prepare Directory
-'''
+```
 project_root/
 ├── data/
 ├── model/
 └── test_align/
-'''
+```
 - Put the training data, validation data and testing data in `data/`.
 - Put the pre-trained model in `model/`
 - Extract the test_align.zip
