@@ -1,7 +1,19 @@
 # IQ-NET
-#### 1. Prerequisites
-- Nvidia GPU
-#### 2. Description of all python files
+
+IQ-NET is a deep learning framework for quartet-based phylogenetic inference.  
+It jointly predicts tree topology and branch lengths directly from multiple sequence alignments (MSAs).
+
+---
+
+## Requirements
+
+- Python 3.8+
+- NVIDIA GPU (recommended)
+- PyTorch (or relevant deep learning framework)
+
+---
+
+## Project Structure#### 
 - `main.py` - script used to train the model
 - `train_top.py` - train the topology classification model, called by `main.py`
 - `train_bls.py` - train the branch length prediction model, called by `mian.py`
@@ -12,15 +24,21 @@
 - `eval_top` - test the topology classification model
 - `eval_bls` - test the branch length prediction model
 - `infer_tree.py` - infer four taxa phylogenetic tree in .nwk format from .fasta file
-#### 3. First steps
+## Setup
+#### 1. Download resources
 - Download the [Data set](https://drive.google.com/file/d/1NmV3VpgdcaW8SQu3QHMDZR6WzJ4nSHqT/view?usp=sharing)
 - Download the [Pre-trained Model](https://drive.google.com/file/d/11yfYPV7zuQKUclLUBxSytUFyQ2VJgqqv/view?usp=sharing)
 - Download the [Test alignments](https://drive.google.com/file/d/16W6JBfJzFxfoJjaRXLBHMiraPV-Dx4Pq/view?usp=sharing)
+#### 2. Prepare Directory
+project_root/
+├── data/
+├── model/
+└── test_align/
 - Put the training data, validation data and testing data in `data/`.
 - Put the pre-trained model in `model/`
 - Extract the test_align.zip
 
-#### 3. Train the model
+## Training
 - Run `main.py` to train the model, the trained model will be saved in `model` folder.
   - net_name: name of the outputted network model
   - type: bls or top, determine train the branch length regressor or train the topology classifier
@@ -37,7 +55,7 @@
   - weight_decay: weight decay of the Adam optimizer
   - alpha: alpha of combined MRE loss, if use combined MRE loss for branch length prediction model
 
-#### 4. Test the model
+## Evaluation
 - Run `eval_top.py` to test the topology prediction model
 - Run `eval_bls.py` to test the branch length regressor model.
   - net_dir: path to the saved model
@@ -49,7 +67,7 @@
 python3 eval_top.py --net_name ./model/iq_net_top.pth --test_dir ./data/df_test.csv --output_dir ./df_iq_net_top.csv
 ```
 
-#### 5. Tree inference
+## Tree Inference
 - Run `infer_tree.py` to infer the four-taxa phylogenetic tree.
   - classifier_name: name of the resumed classifier
   - regressor_name: name of the resumed regressor
@@ -59,16 +77,9 @@ python3 eval_top.py --net_name ./model/iq_net_top.pth --test_dir ./data/df_test.
   - log_file: name of the log file that store the run time
 - Input: .fasta file; Output: .nwk file
 
-#### 6. Other utilities
+## Data Processing Utilities
 - Run `train_test_split` to split a data set into two sub-sets.
   - if you want to split dataset to training, validation, and testing data, you could run this script twice
-- Run `extract_tree_df.py` to extract tree topology and branch length from tree files and alignments files.
-  - columns = ['ext_b1', 'ext_b2', 'ext_b3', 'ext_b4', 'int_b', 'top', 'taxon1', 'taxon2', 'taxon3', 'taxon4','tree_id']
-    - ext_b(i): the external branch length of the (i)th species
-    - int_b: the internal branch length
-    - top: tree topology
-    - taxon(i): the name of the (i)th species
-    - tree_id: the name of the tree file
 - Run `extract_pattern_frequency_tree_df.py` to extract pattern frequency, tree topology, and branch length from tree files and alignments files.
   - First run `get_tree_index.py` to get all tree file names.
   - Then run `extract_pattern_frequency_tree_df.py` to extract data into multiple .csv files.

@@ -64,7 +64,7 @@ def objective(trial):
     # hyperparameters
 
     lr = trial.suggest_float("lr", 1e-6, 1e-2,log=True)
-    batch_size = trial.suggest_categorical("batch_size", [32, 64, 128])
+    batch_size = trial.suggest_categorical("batch_size", [64])
     dropout_rate = trial.suggest_float("dropout_rate",0, 0.5)
     beta_1 = trial.suggest_float("beta_1",  0.5, 0.99)
     beta_2 = trial.suggest_float("beta_2",  0.5, 0.999)
@@ -138,7 +138,7 @@ def main():
     start_time = datetime.datetime.now()
     logging.info(f"Start time: {start_time}")
     study = optuna.create_study(direction="minimize")
-    study.optimize(objective, n_trials=150)
+    study.optimize(objective, n_trials=100)
 
 
     print("Best hyperparameters:", study.best_params)
