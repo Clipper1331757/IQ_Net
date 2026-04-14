@@ -1,3 +1,5 @@
+import os
+os.environ["KMP_DUPLICATE_LIB_OK"] = "TRUE"
 import optuna
 import torch
 import torch.nn as nn
@@ -5,7 +7,7 @@ import torch.optim as optim
 
 from scipy.stats import uniform, randint
 import pandas as pd
-from quartet_net import Quartet_Net_top,Quartet_Net_bls
+from iq_net import IQ_Net_bls
 import random
 import torch
 
@@ -39,44 +41,56 @@ logging.basicConfig(
 #     mem_info = process.memory_info()
 #     logging.info(f"memory used: {mem_info.rss / 1024 / 1024:.2f} MB")
 
-
-def get_data_loaders(batch_size):
-
-    # df_train = pd.read_csv('./data/data_train_v3.csv')
-    # use small dataset just to test the code, directly run on the large train set take too much time.
-    df_train = pd.read_csv('./data/data_val_v3.csv')
-    df_val = pd.read_csv('./data/data_val_v3.csv')
-    df_train = df_train.iloc[:, target_list]
-    # print(df_train.shape)
-    df_val = df_val.iloc[:, target_list]
-
-
-    train_loader = DataLoader(PatternFrequencyDataset_bls(df_train), batch_size=batch_size, shuffle=True,
-                              num_workers=4)
-    val_loader = DataLoader(PatternFrequencyDataset_bls(df_val), batch_size=batch_size, shuffle=True, num_workers=4)
-
+def get_data_loaders(df_train, df_val, batch_size):
+    num_workers = max(4, int(os.cpu_count() / torch.cuda.device_count()))
+    train_loader = DataLoader(PatternFrequencyDataset_bls(df_train),
+                              batch_size=batch_size,
+                              shuffle=True,
+                              num_workers=num_workers,
+                              pin_memory=True)
+    val_loader = DataLoader(PatternFrequencyDataset_bls(df_val),
+                            batch_size=batch_size,
+                            shuffle=True,
+                            num_workers=num_workers,
+                            pin_memory=True)
     return train_loader, val_loader
 
-def objective(trial):
+def objective(trial, df_train, df_val):
     start_time = time.time()
-    logging.info(f"Start Trial {trial.number}: {trial.params}")
 
     # log_system_info()
     # hyperparameters
 
-    lr = trial.suggest_float("lr", 1e-6, 1e-2,log=True)
-    batch_size = trial.suggest_categorical("batch_size", [32, 64, 128])
+    lr = trial.suggest_float("lr", 1e-5, 1e-2,log=True)
+    # batch_size = trial.suggest_categorical("batch_size", [8,16,32, 64, 128,256,512])
     dropout_rate = trial.suggest_float("dropout_rate",0, 0.5)
-    beta_1 = trial.suggest_float("beta_1",  0.5, 0.99)
-    beta_2 = trial.suggest_float("beta_2",  0.5, 0.999)
-    weight_decay = trial.suggest_float("weight_decay",1e-6, 0.01)
-    lr_decay = trial.suggest_float("lr_decay", 0.8, 1)
+    beta_1 = trial.suggest_float("beta_1",  0.9, 0.99)
+    beta_2 = trial.suggest_float("beta_2",  0.9, 0.999)
+    weight_decay = trial.suggest_float("weight_decay",1e-6, 1e-3, log = True)
+    lr_decay = trial.suggest_float("lr_decay", 0.85, 1)
 
 
-    train_loader, val_loader = get_data_loaders(batch_size)
+    if "batch_size" in trial.params:
+
+        batch_size = trial.params["batch_size"]
+    else:
+
+        batch_size = trial.suggest_categorical(
+            "batch_size_v2", [8, 16, 32, 64, 128, 256, 512]
+        )
+
+    # logging.info(f"Start Trial {trial.number}: {trial.params}")
+
+    trial.set_user_attr("batch_size", batch_size)
+
+    params_for_log = {**trial.params, "batch_size": batch_size}
+    logging.info(f"Start Trial {trial.number}: {params_for_log}")
+
+    # logging.info(f"Start Trial {trial.number}: {trial.params}")
+    train_loader, val_loader = get_data_loaders( df_train, df_val,batch_size)
 
     # load model
-    model = Quartet_Net_bls(dropout_rate=dropout_rate)
+    model = IQ_Net_bls(dropout_rate=dropout_rate)
     model.to(device)
 
     optimizer = optim.Adam(model.parameters(), lr=lr, betas=(beta_1, beta_2), weight_decay=weight_decay)
@@ -113,32 +127,49 @@ def objective(trial):
     # validate
     model.eval()
     total_loss = 0.0
+    total_samples = 0
 
-    val_iter = iter(val_loader)
     with torch.no_grad():
-        for i in range(len(val_iter)):
-            x, target = next(val_iter)
-            x = x.to(device).float()
+        for x, target in val_loader:
+            x = x.to(device)
             target = target.to(device)
-            target = target.to(torch.float)
-            predicted = model(x)
+            output = model(x)
+            loss = criterion(output, target)
 
+            bs = x.size(0)
+            total_loss += loss.item() * bs  # sum of loss over this batch
+            total_samples += bs
 
-            # compute loss
-            loss = criterion(predicted, target)
-            total_loss += loss.item()
+    avg_loss = total_loss / total_samples  # mean loss per sample
     # print(total_loss)
     end_time = time.time()
     elapsed_time = end_time - start_time
     logging.info(f"End Trial {trial.number}, loss: {loss:.6f}, run time: {elapsed_time:.2f} s")
-    return total_loss
+    return avg_loss
 
 
 def main():
+
     start_time = datetime.datetime.now()
     logging.info(f"Start time: {start_time}")
-    study = optuna.create_study(direction="minimize")
-    study.optimize(objective, n_trials=1)
+
+    df_train = pd.read_csv('./data/df_train.csv')
+    df_val = pd.read_csv('./data/df_val.csv')
+
+    df_train = df_train.iloc[:, target_list]
+    df_val = df_val.iloc[:, target_list]
+
+    storage = "sqlite:///iq_net_bls_tuning.db"
+    study_name = "iq_net_bls_tuning"
+
+    study = optuna.create_study(
+        study_name=study_name,
+        direction="minimize",
+        storage=storage,
+        load_if_exists=True
+    )
+    study.optimize(lambda trial: objective(trial, df_train, df_val), n_trials=50)
+
 
 
     print("Best hyperparameters:", study.best_params)

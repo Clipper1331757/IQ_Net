@@ -19,7 +19,7 @@ It jointly predicts tree topology and branch lengths directly from multiple sequ
 - `train_bls.py` - train the branch length prediction model, called by `mian.py`
 - `loss_function.py` - customised loss function used for the branch length prediction model
 - `dataset.py` - Data Frame Dataset used for training and testing
-- `quartet_net.py` - network architecture
+- `iq_net.py` - network architecture
 - `permutate_pattern_frequence.py` - utility functions called by `quartet_net.py`
 - `eval_top` - test the topology classification model
 - `eval_bls` - test the branch length prediction model

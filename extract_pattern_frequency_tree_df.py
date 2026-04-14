@@ -26,7 +26,7 @@ random.seed(40)
 #
 # print(encoding_permutations)
 
-def read_msa(msa_file, fasta = True):
+def read_msa(msa_file, fasta = True,shuffle = False):
     with open(msa_file, 'r') as f:
         lines = f.readlines()
     msa = {}
@@ -50,9 +50,11 @@ def read_msa(msa_file, fasta = True):
         msa[name] = np.array(ls)
     # shuffle msa
     items = list(msa.items())
-    random.shuffle(items)
+    if shuffle:
+        random.shuffle(items)
     shuffled_msa = dict(items)
-    return shuffled_msa
+
+    return shuffled_msa, len(shuffled_msa[list(shuffled_msa.keys())[0]])
 
 def encode_msa(msa):
     sequences = np.stack([l for l in msa.values()], axis=0)
@@ -137,12 +139,25 @@ def read_tree(tree_file,msa):
 
 def parse_args():
     parser = argparse.ArgumentParser()
-    parser.add_argument('--tree_folder', type=str, default='./trees',help = 'path to the folder contains tree files', required=False)
-    parser.add_argument('--alignments_folder', type=str, default='./alignments',help = 'path to the folder contains alignments', required=False)
-    parser.add_argument('--tree_index', type=str, default='./index.csv',help='path to the tree_index', required=False)
-    parser.add_argument('--output_dir', type=str, default='./data_sets/data_set.csv', help='path to the output .csv file', required=False)
-    parser.add_argument('--start_count', type=int, default=0, help='number of output .csv files',required=False)
-    parser.add_argument('--save_count', type=int, default=10000, help='save file after processing # batch_size files',required=False)
+    # parser.add_argument('--tree_folder', type=str, default='./treebase/unrooted_trees',help = 'path to the folder contains tree files', required=False)
+    # parser.add_argument('--alignments_folder', type=str, default='./treebase/subalignments',help = 'path to the folder contains alignments', required=False)
+    # parser.add_argument('--tree_index', type=str, default='./index.csv',help='path to the tree_index', required=False)
+    # parser.add_argument('--output_dir', type=str, default='./data/data_set_treebase.csv', help='path to the output .csv file', required=False)
+    # parser.add_argument('--start_count', type=int, default=0, help='number of output .csv files',required=False)
+    # parser.add_argument('--save_count', type=int, default=10000, help='save file after processing # batch_size files',required=False)
+    # parser.add_argument('--shuffle', type=bool, default=False,  required=False)
+
+    parser.add_argument('--tree_folder', type=str, default='./cuong',
+                        help='path to the folder contains tree files', required=False)
+    parser.add_argument('--alignments_folder', type=str, default='./cuong',
+                        help='path to the folder contains alignments', required=False)
+    parser.add_argument('--tree_index', type=str, default='./cuong/index.csv', help='path to the tree_index', required=False)
+    parser.add_argument('--output_dir', type=str, default='./cuong/test.csv',
+                        help='path to the output .csv file', required=False)
+    parser.add_argument('--start_count', type=int, default=0, help='number of output .csv files', required=False)
+    parser.add_argument('--save_count', type=int, default=10000, help='save file after processing # batch_size files',
+                        required=False)
+    parser.add_argument('--shuffle', type=bool, default=False, required=False)
 
     args = parser.parse_args()
     return args
@@ -164,7 +179,7 @@ if __name__ == '__main__':
     count = 0
     columns = list(feature_names.keys())
     columns.extend(
-        ['ext_b1', 'ext_b2', 'ext_b3', 'ext_b4', 'int_b', 'top', 'taxon1', 'taxon2', 'taxon3', 'taxon4', 'tree_id'])
+        ['ext_b1', 'ext_b2', 'ext_b3', 'ext_b4', 'int_b', 'top', 'taxon1', 'taxon2', 'taxon3', 'taxon4','seq_length', 'tree_id'])
     if os.path.exists('./data/data_set.csv'):
         df = pd.read_csv('./data/data_set.csv')
     else:
@@ -176,13 +191,14 @@ if __name__ == '__main__':
         tree_file_path = os.path.join(tree_path, nwk_file)
         file_name = nwk_file.split('.')[0]
         alignments_path = os.path.join(al_path, file_name + '.fasta')
-        msa = read_msa(alignments_path)
+        msa,seq_l = read_msa(alignments_path,shuffle=args.shuffle)
         encode = list(encode_msa(msa))
         #
         bl, top, taxa = read_tree(tree_file_path, msa)
         l = encode + list(bl)
         l.append(top)
         l.extend(taxa)
+        l.append(seq_l)
         l.append(file_name)
         if len(file_name) <= 1:
             print(tree_file_path)

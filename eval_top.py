@@ -1,7 +1,9 @@
+import os
+os.environ["KMP_DUPLICATE_LIB_OK"] = "TRUE"
 import pandas as pd
 import numpy as np
 from dataset import PatternFrequencyDataset_top
-from quartet_net import Quartet_Net_top
+from iq_net import IQ_Net_top
 import torch
 from torch.utils.data import DataLoader
 import argparse
@@ -46,8 +48,10 @@ def evaluate(model,df,batch_size):
     return ls
 def parse_args():
     parser = argparse.ArgumentParser()
-    parser.add_argument('--net_dir', type=str, default='./model/iq_net_top.pth',help = 'path to the saved model', required=False)
-    parser.add_argument('--test_dir', type=str, default='./data/data_test_v3.csv', required=False)
+    parser.add_argument('--net_name', type=str, default='iq_net_top',help = 'name of the classifier network', required=False)
+    # parser.add_argument('--test_dir', type=str, default='./data/data_test_v3.csv', required=False)
+    # parser.add_argument('--output_dir', type=str, default='./iq_net_top_df.csv', required=False)
+    parser.add_argument('--test_dir', type=str, default='./data/df_test.csv', required=False)
     parser.add_argument('--output_dir', type=str, default='./iq_net_top_df.csv', required=False)
 
     args = parser.parse_args()
@@ -56,10 +60,10 @@ def parse_args():
 
 if __name__ == '__main__':
     args = parse_args()
-    resume_dir = args.net_dir
+    resume_dir = './model/' +args.net_name + '.pth'
     df = pd.read_csv(args.test_dir)
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    model = Quartet_Net_top().to(device)
+    model = IQ_Net_top().to(device)
     model = torch.nn.DataParallel(model)
     batch_size = 64
     checkpoint = torch.load(resume_dir,weights_only=True)

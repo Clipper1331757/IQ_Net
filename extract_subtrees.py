@@ -1,25 +1,12 @@
-import sqlite3
 import pandas as pd
-import os
-import numpy as np
-from Bio import Phylo
-from Bio import AlignIO
-from Bio import SeqIO
-from Bio.Seq import Seq
-from Bio.SeqRecord import SeqRecord
-from io import StringIO
-
+import argparse
 import random
 from ete3 import Tree
 from Bio import SeqIO
 import os
-import shutil
 
 
-seed = 40
-
-
-def extract_4_taxa_subtrees_ete3(in_tree,num_taxa):
+def extract_4_taxa_subtrees_ete3(in_tree,num_taxa=4,max_sample = 30):
     """
     extract all possible 4-taxon sub-tree
     """
@@ -30,10 +17,8 @@ def extract_4_taxa_subtrees_ete3(in_tree,num_taxa):
         return subtrees
 
     # compute the number of sub-samples
-    # num_subsamples = 1 + int((num_leaves - num_taxa) / 10)
     num_subsamples = max (1, int(num_leaves/num_taxa-1))
-    num_subsamples = min(num_subsamples,30)
-
+    num_subsamples = min(num_subsamples,max_sample)
 
     # return if there is not enough taxa to sample
     if num_taxa == len(leaves):
@@ -81,7 +66,7 @@ def rename_taxa_ete3(subtree, mapping):
     return subtree
 
 
-def extract_and_rename_alignments(alignments, taxa, mapping):
+def extract_and_rename_alignments(alignments, taxa,mapping):
     """
     extract and rename subalignments
     """
@@ -114,7 +99,7 @@ def save_alignments_to_fasta(alignments, output_file):
 
 
 
-def main(nwk_file, fasta_file = "./", output_nwk_dir='./', output_fasta_dir='./',ali_id='',num_taxa = 4):
+def extract(nwk_file, fasta_file = "./", output_nwk_dir='./', output_fasta_dir='./',ali_id='',max_sample = 30,num_taxa = 4):
     # read tree
     tree = Tree(nwk_file)
 
@@ -122,7 +107,7 @@ def main(nwk_file, fasta_file = "./", output_nwk_dir='./', output_fasta_dir='./'
     #     return 0
 
     # extract all 4 taxa subtree
-    selected_subtrees = extract_4_taxa_subtrees_ete3(tree,num_taxa)
+    selected_subtrees = extract_4_taxa_subtrees_ete3(tree,num_taxa = num_taxa,max_sample = max_sample)
 
     # if no valid subtrees
     if len(selected_subtrees) <= 0:
@@ -159,43 +144,42 @@ def main(nwk_file, fasta_file = "./", output_nwk_dir='./', output_fasta_dir='./'
         save_alignments_to_fasta(renamed_alignments, output_fasta_file)
         # return 1
 
-random.seed(seed)
+def parse_args():
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--tree_folder', type=str, default='./treebase/trees',help = 'path to the folder contains tree files', required=False)
+    parser.add_argument('--alignments_folder', type=str, default='./treebase/alignments',help = 'path to the folder contains alignments', required=False)
+    parser.add_argument('--output_tree_folder', type=str, default='./treebase/subtrees', required=False)
+    parser.add_argument('--output_alignments_folder', type=str, default='./treebase/subalignments', required=False)
+    parser.add_argument('--max_sample', type=int, default=30, required=False)
+    parser.add_argument('--num_taxa', type=int, default=4, required=False)
+    parser.add_argument('--seed', type=int, default=40, help='ramdom seed',required=False)
 
-# tree_path = './data/dna_tree_cleaned.csv'
-# df_tree = pd.read_csv(tree_path,on_bad_lines='skip',delimiter='\t')
-# m,n = df_tree.shape
-# for i in range(m):
-#     main(nwk_file= df_tree.iloc[i,:]['NEWICK_STRING'], fasta_file = "./", output_nwk_dir='./data/subtrees', output_fasta_dir='',ali_id=df_tree.iloc[i,:]['ALI_ID'])
-#     if i >10:
-#         break
+    args = parser.parse_args()
+    return args
 
-count = 0
-with open('index.txt', 'r') as file:
-    while True:
-        line = file.readline()
-        if not line:
-            break
-        line = line.strip()
-        fasta_path = './data/alignments/' + line +'.fasta'
-        nwk_path = './data/tree/' + line +'.nwk'
-        output_nwk_dir = './data/subtrees'
-        output_fasta_dir = './data/subalignments'
-        os.makedirs(output_nwk_dir, exist_ok=True)
-        os.makedirs(output_fasta_dir, exist_ok=True)
-        main(nwk_path, fasta_path, output_nwk_dir, output_fasta_dir,line)
 
-        #
-        # # the code below used for test
-        # source_file = nwk_path
-        # destination_folder = "./data/test_tree"
-        # shutil.copy(source_file, destination_folder)
-        #
-        # source_file = fasta_path
-        #
-        # shutil.copy(source_file, destination_folder)
-        # count +=1
-        # if count >5:
-        #     break
+if __name__ == '__main__':
+    args = parse_args()
+    random.seed(args.seed)
+    tree_folder = args.tree_folder
+    alignments_folder = args.alignments_folder
+
+    if not os.path.exists(args.output_tree_folder):
+        os.makedirs(args.output_tree_folder)
+
+    if not os.path.exists(args.output_alignments_folder):
+        os.makedirs(args.output_alignments_folder)
+
+    files = os.listdir(tree_folder)
+    for file in files:
+        tree_id = file.split('.')[0]
+        alignments_file = os.path.join(alignments_folder, tree_id+'.fasta')
+
+        if not os.path.exists(alignments_file):
+            continue
+        tree_file = os.path.join(tree_folder, file)
+        extract(tree_file, alignments_file, output_nwk_dir= args.output_tree_folder, output_fasta_dir= args.output_alignments_folder,ali_id = tree_id ,max_sample= args.max_sample,num_taxa = args.num_taxa)
+
 
 
 
