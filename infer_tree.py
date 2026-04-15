@@ -53,20 +53,7 @@ def encode_msa(msa):
     uniques, counts = np.unique(patter_nums, return_counts=True)
     for i in range(len(uniques)):
         pattern_counts[uniques[i]] = counts[i]
-    # get all permutations
-    # for row in range(24):
-    #     encoded[row] = pattern_counts[encoding_permutations[row]]
     encoded = pattern_counts / sequences.shape[1]
-
-    # for permu_i,permu in enumerate(P4):
-    #     new_msa = sequences[list(permu)]
-    #     patter_nums = (new_msa * nu_weights).sum(axis=0)
-    #     pattern_counts = np.zeros(625, dtype=int)
-    #     uniques, counts = np.unique(patter_nums,return_counts=True)
-    #     for i in range(len(uniques)):
-    #         pattern_counts[uniques[i]] = counts[i]
-    #     encoded[permu_i] = pattern_counts
-    # encoded = encoded / sequences.shape[1]
     return encoded.reshape(-1)
 
 def infer_tree(msa_file, output_path, top_classifier, bls_predictor,fasta = True,device = 'gpu'):

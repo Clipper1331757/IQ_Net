@@ -135,12 +135,4 @@ for i in range(20):
             df = pd.concat([df, sub_df])
 
 
-
-        # print(tree_dict)
-        # count +=1
-        # if count>=20:
-        #     break
-        # break
-
-
 df.to_csv('val_data_iq_tree.csv',index=False)

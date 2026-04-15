@@ -29,6 +29,7 @@ class ResBlock(nn.Module):
     def forward(self, x):
         return x + self.layers(x)
 
+# topology classifier
 class IQ_Net_top(nn.Module):
     def __init__(self,
                  in_feature=625,
@@ -58,35 +59,6 @@ class IQ_Net_top(nn.Module):
             nn.Linear(clf_hidden_3, clf_out, bias=False)
         )
 
-        # self.head2 = nn.Sequential(
-        #     nn.Linear(in_feature, clf_hidden_1, bias=False),
-        #     nn.ReLU(),
-        #     nn.Dropout(dropout_rate),
-        #
-        #     nn.Linear(clf_hidden_1, clf_hidden_2, bias=False),
-        #     nn.ReLU(),
-        #     nn.Dropout(dropout_rate),
-        #
-        #     nn.Linear(clf_hidden_2, clf_hidden_3, bias=False),
-        #     nn.ReLU(),
-        #
-        #     nn.Linear(clf_hidden_3, clf_out, bias=False)
-        # )
-        #
-        # self.head3 = nn.Sequential(
-        #     nn.Linear(in_feature, clf_hidden_1, bias=False),
-        #     nn.ReLU(),
-        #     nn.Dropout(dropout_rate),
-        #
-        #     nn.Linear(clf_hidden_1, clf_hidden_2, bias=False),
-        #     nn.ReLU(),
-        #     nn.Dropout(dropout_rate),
-        #
-        #     nn.Linear(clf_hidden_2, clf_hidden_3, bias=False),
-        #     nn.ReLU(),
-        #
-        #     nn.Linear(clf_hidden_3, clf_out, bias=False)
-        # )
 
     def forward(self, data):
         device = data.device
@@ -123,7 +95,7 @@ class IQ_Net_top(nn.Module):
         # print(result[:5])
         return result
 
-
+# branch length predictor
 class IQ_Net_bls(nn.Module):
     def __init__(self, in_feature=625, res_hidden_feature=256,
                  clf1_hidden_1=256, clf1_hidden_2=128, clf1_hidden_3=16, clf1_out=1,

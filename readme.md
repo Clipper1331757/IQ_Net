@@ -1,8 +1,11 @@
 # IQ-NET
-
+---
 IQ-NET is a deep learning framework for quartet-based phylogenetic inference.  
 It jointly predicts tree topology and branch lengths directly from multiple sequence alignments (MSAs).
 
+---
+## How to Cite IQ-Net
+Yang, C., Minh, B. Q., Ly-Trong, N., Zhuang, Z., Demotte, P., Vinh, L. S., & Dang, C. C. (2025). IQ-NET: A Deep Learning Approach for Fast and Accurate Phylogenetic Inference from Real Alignments. https://doi.org/10.32942/X2ND3S
 ---
 
 ## Requirements
