@@ -6,7 +6,7 @@ It jointly predicts tree topology and branch lengths directly from multiple sequ
 ---
 ## How to Cite IQ-Net
 
-- Yang, C., Minh, B. Q., Ly-Trong, N., Zhuang, Z., Demotte, P., Vinh, L. S., & Dang, C. C. (2025). IQ-NET: A Deep Learning Approach for Fast and Accurate Phylogenetic Inference from Real Alignments. https://doi.org/10.32942/X2ND3S
+- Yang, C., Zhuang, Z., Demotte, P., Dang, C. C., Vinh, L. S., Minh, B. Q., & Ly-Trong, N. (2025). IQ-NET: A Deep Learning Approach for Fast and Accurate Phylogenetic Inference from Real Alignments. https://doi.org/10.32942/X2ND3S
 ---
 
 ## Requirements
