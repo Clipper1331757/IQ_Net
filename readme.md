@@ -30,9 +30,7 @@ It jointly predicts tree topology and branch lengths directly from DNA alignment
 - `infer_tree.py` - infer four taxa phylogenetic tree in .nwk format from .fasta file
 ## Setup
 #### 1. Download resources
-- Download the [Data set](https://drive.google.com/file/d/1NmV3VpgdcaW8SQu3QHMDZR6WzJ4nSHqT/view?usp=sharing)
-- Download the [Pre-trained Model](https://drive.google.com/file/d/11yfYPV7zuQKUclLUBxSytUFyQ2VJgqqv/view?usp=sharing)
-- Download the [Test alignments](https://drive.google.com/file/d/16W6JBfJzFxfoJjaRXLBHMiraPV-Dx4Pq/view?usp=sharing)
+- Download the [Training and testing data](https://zenodo.org/records/19582620?token=eyJhbGciOiJIUzUxMiJ9.eyJpZCI6IjE1YzdhNDhjLWFhYjEtNGI5Ny1iN2U1LTYyYWZlMWFjNGYyMiIsImRhdGEiOnt9LCJyYW5kb20iOiJlYWZhMWQ0NGZmYWM1Y2Y4YzE3YTYwZWMyMzYwMDZkOCJ9.vu069jeXtyhNx63p9sVRoT5xlMMSmxhihAOdfhjWP7mvnJnBNxC8I7eMjzQUhdXig2UexAl0s_Wm_H3h8CO9yw)
 #### 2. Prepare Directory
 ```
 project_root/
