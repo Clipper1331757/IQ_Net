@@ -98,3 +98,12 @@ python3 eval_top.py --net_name ./model/iq_net_top.pth --test_dir ./data/df_test.
     - tree_id: the name of the tree file
 - `data_analysis.ipynb` contains codes used for data visualisation and analysis.
   - Should have the processed .csv file.
+
+## Benchmark Scripts
+
+All scripts and documentation used to benchmark IQ-NET against **IQ-TREE-quartet** are provided in the `IQ-TREE-quartet_benchmark/` directory.
+
+This directory includes:
+
+- Scripts for quartet tree inference using **IQ-TREE 2**.
+- A dedicated `README.md` describing the required software versions, directory structure, and instructions for reproducing the benchmark experiments.
